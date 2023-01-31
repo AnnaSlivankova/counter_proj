@@ -1,0 +1,36 @@
+.button {
+    overflow: hidden;
+    padding: 5px 24px;
+
+    border-radius: 3px;
+    border: none;
+
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+
+    margin: 2px;
+    min-width: 100px;
+}
+
+.disabled {
+    color: #002e5c;
+    background: #004d99;
+    opacity: 0.5;
+}
+
+.default {
+    background: green;
+}
+
+.default:hover {
+    background:greenyellow;
+}
+
+.button:disabled {
+    cursor: default;
+}
+
