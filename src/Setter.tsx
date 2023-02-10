@@ -1,10 +1,10 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import {ButtonUni} from "./ButtonUni";
 import {StateType} from "./App";
 
 type SetterPropsType = {
     state: StateType
-    setToLocalStorage: () => void
+    setChosenValues: () => void
     setMaxValue: (maxValue: number) => void
     setMinValue: (minValue: number) => void
 }
@@ -25,7 +25,7 @@ export const Setter = (props: SetterPropsType) => {
                         max: <input className='input' type='number' onChange={onChangeMaxCountHandler}/>
                         min: <input className='input' type='number' onChange={onChangeMinCountHandler}/>
                     </div>
-                    <ButtonUni disabled={props.state.error === 'Incorrect values!'} callback={props.setToLocalStorage}>set</ButtonUni>
+                    <ButtonUni disabled={props.state.error === 'Incorrect values!'} callback={props.setChosenValues}>set</ButtonUni>
                 </div>
             </div>
         </div>

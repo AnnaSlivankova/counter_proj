@@ -1,10 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import './App.css';
 import {Counter} from "./Counter";
 import {Setter} from "./Setter";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./store/store";
+import {
+    changeMaxValueAC,
+    changeMinValueAC,
+    increaseCountAC,
+    resetCountAC,
+    setChosenValuesAC
+} from "./store/app-reducer";
 
 export type ErrorType = 'Incorrect values!' | 'Enter your values and press SET' | '' | null
-
 export type StateType = {
     minValue: number
     maxValue: number
@@ -13,51 +21,25 @@ export type StateType = {
 }
 
 function App() {
-    const [state, setState] = useState<StateType>({minValue: 0, maxValue: 0, count: 0, error: ''})
+    let app = useSelector<AppRootStateType, StateType>(state => state.app)
+    const dispatch = useDispatch()
 
     const increaseCount = () => {
-        if (state.count < state.maxValue) {
-            setState({...state, count: state.count + 1, error: ''})
-        }
+        dispatch(increaseCountAC())
     }
-
     const resetCount = () => {
-        setState({...state, count: state.minValue, error: ''})
+        dispatch(resetCountAC())
     }
-
     const setMaxValue = (maxValue: number) => {
-        if (maxValue <= state.minValue || maxValue === 0) {
-            setState({...state, error: "Incorrect values!"})
-        } else {
-            setState({...state, maxValue, error: "Enter your values and press SET"})
-        }
+        dispatch(changeMaxValueAC(maxValue))
     }
-
     const setMinValue = (minValue: number) => {
-        if (minValue >= state.maxValue || minValue < 0) {
-            setState({...state, error: "Incorrect values!"})
-        } else {
-            setState({...state, minValue, error: "Enter your values and press SET"})
-        }
+        dispatch(changeMinValueAC(minValue))
     }
-
-    const setToLocalStorage = () => {
-        localStorage.setItem('values', JSON.stringify(state))
+    const setChosenValues = () => {
+        dispatch(setChosenValuesAC())
         resetCount()
     }
-
-    const getFromLocalStorage = () => {
-        let valueAsString = localStorage.getItem('values')
-        if (valueAsString) {
-            let newValue = JSON.parse(valueAsString)
-            setState(newValue)
-        }
-    }
-
-    useEffect(() => {
-        getFromLocalStorage()
-    }, [])
-
 
     return (
         <div className="App">
@@ -65,9 +47,9 @@ function App() {
                 <h1>Simple counter</h1>
                 <h3>This is my first project with React/Redux/TS. <br/> I left it here as a memory.</h3>
                 <div className="Counter">
-                    <Counter state={state} increaseCount={increaseCount} resetCount={resetCount} count={state.count}
-                             error={state.error}/>
-                    <Setter state={state} setToLocalStorage={setToLocalStorage} setMaxValue={setMaxValue}
+                    <Counter state={app} increaseCount={increaseCount} resetCount={resetCount} count={app.count}
+                             error={app.error}/>
+                    <Setter state={app} setChosenValues={setChosenValues} setMaxValue={setMaxValue}
                             setMinValue={setMinValue}/>
                 </div>
             </div>
