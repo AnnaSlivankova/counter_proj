@@ -1,47 +1,22 @@
 import {StateType} from "../App";
 
-type ChangeMaxValueACType = ReturnType<typeof changeMaxValueAC>
-type ChangeMinValueACType = ReturnType<typeof changeMinValueAC>
 type ResetCountACType = ReturnType<typeof resetCountAC>
 type IncreaseCountACType = ReturnType<typeof increaseCountAC>
 type SetChosenValuesACType = ReturnType<typeof setChosenValuesAC>
+type changeValuesErrorActionType = ReturnType<typeof changeValuesErrorAC>
 
-type ActionTypes = ChangeMaxValueACType
-    | ChangeMinValueACType | ResetCountACType
+type ActionTypes = ResetCountACType
     | IncreaseCountACType | SetChosenValuesACType
+    | changeValuesErrorActionType
 
-const initialState: StateType = {minValue: 0, maxValue: 0, count: 0, error: ''}
+const initialState: StateType = {minValue: 0, maxValue: 0, count: 0, error: 'Enter your values and press SET'}
 
 export const AppReducer = (state = initialState, action: ActionTypes): StateType => {
     switch (action.type) {
-        case 'CHANGE-MAX-VALUE':
-            if (action.maxValue <= state.minValue || action.maxValue === 0) return {
-                ...state,
-                maxValue: 0,
-                minValue: 0,
-
-                error: "Incorrect values!"
-            }; else return {
-                ...state,
-                maxValue: action.maxValue,
-                error: "Enter your values and press SET"
-            }
-        case 'CHANGE-MIN-VALUE':
-            if (action.minValue >= state.maxValue || action.minValue < 0) return {
-                ...state,
-                maxValue: 0,
-                minValue: 0,
-                error: "Incorrect values!"
-            }; else return {
-                ...state,
-                minValue: action.minValue,
-                error: "Enter your values and press SET"
-            }
         case 'RESET-COUNT':
             return {
                 ...state,
                 count: state.minValue,
-                error: ''
             }
         case 'INCREASE-COUNT':
             if (state.count < state.maxValue) {
@@ -52,34 +27,36 @@ export const AppReducer = (state = initialState, action: ActionTypes): StateType
                 }
             } else return state
         case 'SET-CHOSEN-VALUES':
-            if(state.minValue > state.maxValue || state.minValue < 0 || state.minValue === state.maxValue) {
+            if (action.minValue > action.maxValue || action.minValue < 0 || action.minValue === action.maxValue || action.minValue < state.minValue) {
                 return {
                     ...state,
-                    // maxValue: 0,
-                    // minValue: 0,
-                    error: "Incorrect values!"
+                    minValue: 0,
+                    maxValue: 0,
+                    error: 'Incorrect values!'
                 }
             } else
-            return {
-                ...state,
-                maxValue: state.maxValue,
-                minValue: state.minValue,
-            }
+                return {
+                    ...state,
+                    maxValue: action.maxValue,
+                    minValue: action.minValue,
+                    error: ''
+                }
+        case "CHANGE-VALUES-ERROR-MESSAGE":
+            if (action.max <= action.min || action.max === 0 || action.min < 0) {
+                return {
+                    ...state,
+                    error: 'Incorrect values!'
+                }
+            } else
+                return {
+                    ...state,
+                    error: 'Enter your values and press SET'
+                }
         default:
             return state
     }
 }
 
-export const changeMaxValueAC = (maxValue: number) => {
-    return {
-        type: 'CHANGE-MAX-VALUE', maxValue
-    } as const
-}
-export const changeMinValueAC = (minValue: number) => {
-    return {
-        type: 'CHANGE-MIN-VALUE', minValue
-    } as const
-}
 export const resetCountAC = () => {
     return {
         type: 'RESET-COUNT'
@@ -90,8 +67,17 @@ export const increaseCountAC = () => {
         type: 'INCREASE-COUNT'
     } as const
 }
-export const setChosenValuesAC = () => {
+export const setChosenValuesAC = (max: number, min: number) => {
     return {
-        type: 'SET-CHOSEN-VALUES'
+        type: 'SET-CHOSEN-VALUES',
+        minValue: min,
+        maxValue: max
+    } as const
+}
+export const changeValuesErrorAC = (min: number, max: number) => {
+    return {
+        type: 'CHANGE-VALUES-ERROR-MESSAGE',
+        min,
+        max
     } as const
 }

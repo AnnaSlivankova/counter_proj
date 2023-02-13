@@ -1,31 +1,30 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {ButtonUni} from "./ButtonUni";
 import {StateType} from "./App";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store/store";
-import {changeMaxValueAC, changeMinValueAC, resetCountAC, setChosenValuesAC} from "./store/app-reducer";
+import {changeValuesErrorAC, resetCountAC, setChosenValuesAC} from "./store/app-reducer";
 
 export const Setter = () => {
     let setter = useSelector<AppRootStateType, StateType>(state => state.app)
     const dispatch = useDispatch()
 
-    const setMaxValue = (maxValue: number) => {
-        dispatch(changeMaxValueAC(maxValue))
-    }
-    const setMinValue = (minValue: number) => {
-        dispatch(changeMinValueAC(minValue))
-    }
+    const [max, setMax] = useState(0)
+    const [min, setMin] = useState(0)
+
     const setChosenValues = () => {
-        dispatch(setChosenValuesAC())
+        dispatch(setChosenValuesAC(max, min))
         dispatch(resetCountAC())
     }
-
     const onChangeMaxCountHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(+e.currentTarget.value)
+        dispatch(changeValuesErrorAC(min, +e.currentTarget.value))
+        setMax(+e.currentTarget.value)
     }
     const onChangeMinCountHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setMinValue(+e.currentTarget.value)
+        dispatch(changeValuesErrorAC(+e.currentTarget.value, max))
+        setMin(+e.currentTarget.value)
     }
+
 
     return (
         <div>
@@ -35,7 +34,7 @@ export const Setter = () => {
                         max: <input className='input' type='number' onChange={onChangeMaxCountHandler}/>
                         min: <input className='input' type='number' onChange={onChangeMinCountHandler}/>
                     </div>
-                    <ButtonUni disabled={setter.error === 'Incorrect values!'  || setter.minValue > setter.maxValue || setter.minValue < 0} callback={setChosenValues}>set</ButtonUni>
+                    <ButtonUni disabled={setter.error === 'Incorrect values!'} callback={setChosenValues}>set</ButtonUni>
                 </div>
             </div>
         </div>

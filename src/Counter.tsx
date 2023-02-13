@@ -21,7 +21,7 @@ export const Counter = () => {
             <div className="display">
                 <div className="counterSet">
                     <div  className="counter">
-                        {counter.error ? <div className="error">{counter.error}</div> : <div className={counter.count === counter.maxValue ? 'error' : ''}>{counter.count}</div>}
+                        {counter.error === 'Incorrect values!' || counter.error === 'Enter your values and press SET'? <div className="error">{counter.error}</div> : <div className={counter.count === counter.maxValue ? 'error' : ''}>{counter.count}</div>}
                     </div>
                     <ButtonUni disabled={counter.count === counter.maxValue} callback={increaseCount}>count</ButtonUni>
                     <ButtonUni disabled={counter.count === counter.minValue} callback={resetCount}>reset</ButtonUni>
