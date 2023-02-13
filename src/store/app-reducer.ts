@@ -17,6 +17,9 @@ export const AppReducer = (state = initialState, action: ActionTypes): StateType
         case 'CHANGE-MAX-VALUE':
             if (action.maxValue <= state.minValue || action.maxValue === 0) return {
                 ...state,
+                maxValue: 0,
+                minValue: 0,
+
                 error: "Incorrect values!"
             }; else return {
                 ...state,
@@ -26,6 +29,8 @@ export const AppReducer = (state = initialState, action: ActionTypes): StateType
         case 'CHANGE-MIN-VALUE':
             if (action.minValue >= state.maxValue || action.minValue < 0) return {
                 ...state,
+                maxValue: 0,
+                minValue: 0,
                 error: "Incorrect values!"
             }; else return {
                 ...state,
@@ -47,10 +52,18 @@ export const AppReducer = (state = initialState, action: ActionTypes): StateType
                 }
             } else return state
         case 'SET-CHOSEN-VALUES':
+            if(state.minValue > state.maxValue || state.minValue < 0 || state.minValue === state.maxValue) {
+                return {
+                    ...state,
+                    // maxValue: 0,
+                    // minValue: 0,
+                    error: "Incorrect values!"
+                }
+            } else
             return {
                 ...state,
                 maxValue: state.maxValue,
-                minValue: state.minValue
+                minValue: state.minValue,
             }
         default:
             return state

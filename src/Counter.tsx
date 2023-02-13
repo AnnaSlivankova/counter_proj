@@ -1,21 +1,19 @@
 import React from 'react';
 import {ButtonUni} from "./ButtonUni";
-import {ErrorType, StateType} from "./App";
+import {StateType} from "./App";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./store/store";
+import {increaseCountAC, resetCountAC} from "./store/app-reducer";
 
-type CounterPropsType = {
-    state: StateType
-    increaseCount: () => void
-    resetCount: () => void
-    count: number
-    error: ErrorType
-}
+export const Counter = () => {
+    let counter = useSelector<AppRootStateType, StateType>(state => state.app)
+    const dispatch = useDispatch()
 
-export const Counter = (props: CounterPropsType) => {
-    const incCountHandler = () => {
-        props.increaseCount()
+    const increaseCount = () => {
+        dispatch(increaseCountAC())
     }
-    const resCountHandler = () => {
-        props.resetCount()
+    const resetCount = () => {
+        dispatch(resetCountAC())
     }
 
     return (
@@ -23,10 +21,10 @@ export const Counter = (props: CounterPropsType) => {
             <div className="display">
                 <div className="counterSet">
                     <div  className="counter">
-                        {props.error ? <div className="error">{props.error}</div> : <div className={props.state.count === props.state.maxValue ? 'error' : ''}>{props.count}</div>}
+                        {counter.error ? <div className="error">{counter.error}</div> : <div className={counter.count === counter.maxValue ? 'error' : ''}>{counter.count}</div>}
                     </div>
-                    <ButtonUni disabled={props.state.count === props.state.maxValue} callback={incCountHandler}>count</ButtonUni>
-                    <ButtonUni disabled={props.state.count === props.state.minValue} callback={resCountHandler}>reset</ButtonUni>
+                    <ButtonUni disabled={counter.count === counter.maxValue} callback={increaseCount}>count</ButtonUni>
+                    <ButtonUni disabled={counter.count === counter.minValue} callback={resetCount}>reset</ButtonUni>
                 </div>
             </div>
         </div>

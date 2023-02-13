@@ -1,20 +1,30 @@
 import React, {ChangeEvent} from 'react';
 import {ButtonUni} from "./ButtonUni";
 import {StateType} from "./App";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./store/store";
+import {changeMaxValueAC, changeMinValueAC, resetCountAC, setChosenValuesAC} from "./store/app-reducer";
 
-type SetterPropsType = {
-    state: StateType
-    setChosenValues: () => void
-    setMaxValue: (maxValue: number) => void
-    setMinValue: (minValue: number) => void
-}
+export const Setter = () => {
+    let setter = useSelector<AppRootStateType, StateType>(state => state.app)
+    const dispatch = useDispatch()
 
-export const Setter = (props: SetterPropsType) => {
+    const setMaxValue = (maxValue: number) => {
+        dispatch(changeMaxValueAC(maxValue))
+    }
+    const setMinValue = (minValue: number) => {
+        dispatch(changeMinValueAC(minValue))
+    }
+    const setChosenValues = () => {
+        dispatch(setChosenValuesAC())
+        dispatch(resetCountAC())
+    }
+
     const onChangeMaxCountHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.setMaxValue(+e.currentTarget.value)
+        setMaxValue(+e.currentTarget.value)
     }
     const onChangeMinCountHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.setMinValue(+e.currentTarget.value)
+        setMinValue(+e.currentTarget.value)
     }
 
     return (
@@ -25,7 +35,7 @@ export const Setter = (props: SetterPropsType) => {
                         max: <input className='input' type='number' onChange={onChangeMaxCountHandler}/>
                         min: <input className='input' type='number' onChange={onChangeMinCountHandler}/>
                     </div>
-                    <ButtonUni disabled={props.state.error === 'Incorrect values!'} callback={props.setChosenValues}>set</ButtonUni>
+                    <ButtonUni disabled={setter.error === 'Incorrect values!'  || setter.minValue > setter.maxValue || setter.minValue < 0} callback={setChosenValues}>set</ButtonUni>
                 </div>
             </div>
         </div>
